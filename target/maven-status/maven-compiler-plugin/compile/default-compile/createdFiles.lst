@@ -1,4 +1,5 @@
 com\banking\server\ServerController.class
+com\banking\bankingsystem\BankingSystem.class
 com\banking\server\Server$OnMessageReceived.class
 com\banking\server\ServerController$1$1.class
 com\banking\server\ServerController$1.class

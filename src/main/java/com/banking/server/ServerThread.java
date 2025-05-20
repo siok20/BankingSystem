@@ -3,6 +3,7 @@ package com.banking.server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -36,36 +37,36 @@ public class ServerThread extends Thread{
     public void run() {
         running = true;
         try {
-            try {               
-                boolean soycontador = false;                
-                mOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())), true);
-                System.out.println("TCP Server"+ "C: Sent.");
-                messageListener = tcpserver.getMessageListener();
-                in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                while (running) {
+            mOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())), true);
+            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            messageListener = tcpserver.getMessageListener();
+            System.out.println("TCP ServerC: Sent.");
+
+            while (running) {
+                try {
                     message = in.readLine();
-                    
                     if (message != null && messageListener != null) {
                         messageListener.messageReceived(message);
                     }
-                    
-
-                    message = null;
+                } catch (IOException e) {
+                    if (running) {
+                        System.err.println("TCP Server: Error en readLine(): " + e.getMessage());
+                    }
+                    break; // Salir del bucle si el socket se cerró
                 }
-                System.out.println("RESPONSE FROM CLIENT"+ "S: Received Message: '" + message + "'");
-            } catch (Exception e) {
-                System.out.println("TCP Server"+ "S: Error"+ e);
-            } finally {
-                client.close();
             }
 
-        } catch (Exception e) {
-            System.out.println("TCP Server"+ "C: Error"+ e);
+        } catch (IOException e) {
+            System.err.println("TCP ServerC: Error general: " + e.getMessage());
+        } finally {
+            close();
+            System.out.println("Hilo del cliente " + clientID + " finalizado.");
         }
     }
     
     public void stopClient(){
         running = false;
+        close();
     }
     
     public void sendMessage(String message){//funcion de trabajo
@@ -74,4 +75,27 @@ public class ServerThread extends Thread{
             mOut.flush();
         }
     }    
+    
+    public void close(){
+        try {
+            running = false;
+
+            if (in != null) {
+                in.close();
+            }
+
+            if (mOut != null) {
+                mOut.close();
+            }
+
+            if (client != null && !client.isClosed()) {
+                client.close();
+            }
+
+            System.out.println("Cliente " + clientID + " desconectado correctamente");
+
+        } catch (IOException e) {
+            System.err.println("Error al cerrar recursos del cliente " + clientID + ": " + e.getMessage());
+        }
+    }
 }

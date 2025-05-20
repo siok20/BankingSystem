@@ -2,6 +2,7 @@
 package com.banking.server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,18 +18,22 @@ public class Server {
     int nrcli = 0;
     public static final int SERVER_PORT = 8080;
     private OnMessageReceived messageListener = null;
-    private boolean running = false;
+    private volatile boolean running = false;
     ServerThread[] clients = new ServerThread[10];
+    Thread[] clientsThreads = new Thread[10];
     PrintWriter mOut;
     BufferedReader in;
     ServerSocket serverSocket;
+    
     //el constructor pide una interface OnMessageReceived
     public Server(OnMessageReceived messageListener) {
         this.messageListener = messageListener;
     }
+    
     public OnMessageReceived getMessageListener(){
         return this.messageListener;
     }
+    
     public void sendMessageTCPServer(String message){
         for (int i = 1; i <= nrcli; i++) {
             clients[i].sendMessage(message);
@@ -45,24 +50,62 @@ public class Server {
             while(running){
                 Socket client = serverSocket.accept();
                 System.out.println("TCP Server"+"S: Receiving...");
+                
+                if(!running) break;
+                
                 nrcli++;
                 System.out.println("Engendrado " + nrcli);
                 clients[nrcli] = new ServerThread(client,this,nrcli,clients);
-                Thread t = new Thread(clients[nrcli]);
-                t.start();
-                System.out.println("Nuevo conectado:"+ nrcli+" jugadores conectados");
+                clientsThreads[nrcli] = new Thread(clients[nrcli]);
+                clientsThreads[nrcli].start();
+                System.out.println("Nuevo conectado\n"+ nrcli +" jugadores conectados");
                 
             }
             
-        }catch( Exception e){
-            System.out.println("Error"+e.getMessage());
+        }catch( IOException e){
+            
+            if (running) {
+                System.out.println("Error en la conexión: " + e.getMessage());
+            }
+            else System.out.println("Error "+e.getMessage());
+            
         }finally{
-
+            stop();
         }
     }
     public  ServerThread[] getClients(){
         return clients;
     } 
+
+    void stop() {
+        System.out.println("Apagando servidor...");
+        running = false;
+        
+        try{
+            if(serverSocket != null && !serverSocket.isClosed()){
+                serverSocket.close();
+                System.out.println("serverSocket cerrado");
+            }
+        }catch(IOException e){
+            System.out.println("Error cerrando ServerSocket: ");
+        }
+        
+        for(int i=0; i<nrcli; i++){
+            if(clients[i]!=null){
+                clients[i].stopClient();
+            }
+            
+            if(clientsThreads[i] != null){
+                try{
+                    clientsThreads[i].join(1000);
+                }catch(InterruptedException e){
+                    System.out.println("Error al cerrar el hilo del cliente " + i + ": " + e.getMessage());
+                }
+            }
+        }
+        
+        
+    }
 
     public interface OnMessageReceived {
         public void messageReceived(String message);
