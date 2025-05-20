@@ -1,5 +1,10 @@
+com\banking\managedata\prueba.class
 com\banking\server\ServerController.class
+com\banking\managedata\ManageData.class
 com\banking\bankingsystem\BankingSystem.class
+com\banking\model\Cuenta.class
+com\banking\model\Transaccion.class
+com\banking\model\Cliente.class
 com\banking\server\Server$OnMessageReceived.class
 com\banking\server\ServerController$1$1.class
 com\banking\server\ServerController$1.class

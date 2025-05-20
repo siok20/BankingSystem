@@ -1,0 +1,10 @@
+101 | 1 | 6152.88 | Ahorros
+102 | 2 | 6598.7 | Ahorros
+103 | 3 | 6577.75 | Corriente
+104 | 4 | 3889.0 | Corriente
+105 | 5 | 6894.02 | Ahorros
+106 | 6 | 3796.51 | Ahorros
+107 | 7 | 600.85 | Ahorros
+108 | 8 | 5021.93 | Ahorros
+109 | 9 | 2018.17 | Corriente
+110 | 10 | 6254.07 | Corriente
