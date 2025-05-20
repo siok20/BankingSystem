@@ -2,15 +2,18 @@
 package com.banking.server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+
 import java.net.Socket;
 
-/**
- * @author siok
- */
-public class ServerThread extends Thread {
-   private Socket client;
-    private Server server;
+
+public class ServerThread extends Thread{
+    
+    private Socket client;
+    private Server tcpserver;
     private int clientID;                 
     private boolean running = false;
     public PrintWriter mOut;
@@ -19,9 +22,9 @@ public class ServerThread extends Thread {
     private String message;
     ServerThread[] all_clients;
 
-    public ServerThread(Socket client, Server server, int clientID,ServerThread[] all_clients) {
+    public ServerThread(Socket client, Server tcpserver, int clientID ,ServerThread[] all_clients) {
         this.client = client;
-        this.server = server;
+        this.tcpserver = tcpserver;
         this.clientID = clientID;
         this.all_clients = all_clients;
     }
@@ -37,7 +40,7 @@ public class ServerThread extends Thread {
                 boolean soycontador = false;                
                 mOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())), true);
                 System.out.println("TCP Server"+ "C: Sent.");
-                messageListener = server.getMessageListener();
+                messageListener = tcpserver.getMessageListener();
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 while (running) {
                     message = in.readLine();
@@ -70,5 +73,5 @@ public class ServerThread extends Thread {
             mOut.println( message);
             mOut.flush();
         }
-    } 
+    }    
 }
