@@ -1,3 +1,2 @@
 *.class
-src/main/data/cliente
-src/main/data/cuentas
+src/main/data
