@@ -39,8 +39,9 @@ public class TCPClient50 {
         mRun = true;
         try {
             InetAddress serverAddr = InetAddress.getByName(SERVERIP);
-            System.out.println("TCP Client"+ "C: Conectando...");
+            System.out.println("Socket Client Connecting...");
             Socket socket = new Socket(serverAddr, SERVERPORT);
+            System.out.println("Sucessfully");
             try {
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
                 System.out.println("TCP Client"+ "C: Sent.");

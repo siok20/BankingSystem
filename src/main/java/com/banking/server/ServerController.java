@@ -56,7 +56,7 @@ public class ServerController {
    
    }
    void ServidorRecibe(String llego){
-       System.out.println("SERVIDOR40 El mensaje:" + llego);
+       System.out.println("SERVIDOR40 El mensaje: " + llego);
    }
    
    void ServidorEnvia(String envia){

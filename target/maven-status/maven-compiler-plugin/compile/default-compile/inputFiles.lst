@@ -1,4 +1,6 @@
 C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\bankingsystem\BankingSystem.java
+C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\client\Cliente50.java
+C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\client\TCPClient50.java
 C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\managedata\ManageData.java
 C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\managedata\prueba.java
 C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\model\Cliente.java
@@ -7,3 +9,5 @@ C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\model\
 C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\server\Server.java
 C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\server\ServerController.java
 C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\server\ServerThread.java
+C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\worknode\Node.java
+C:\Users\ADMIN\Desktop\25-1\CC4P1\BankingSystem\src\main\java\com\banking\worknode\WorkNode.java

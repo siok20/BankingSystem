@@ -40,12 +40,13 @@ public class ServerThread extends Thread{
             mOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             messageListener = tcpserver.getMessageListener();
-            System.out.println("TCP ServerC: Sent.");
+            System.out.println("Hilo del cliente " + clientID + " running");
 
             while (running) {
                 try {
                     message = in.readLine();
                     if (message != null && messageListener != null) {
+                        System.out.println("Mensaje desde el cliente id: " + clientID);
                         messageListener.messageReceived(message);
                     }
                 } catch (IOException e) {

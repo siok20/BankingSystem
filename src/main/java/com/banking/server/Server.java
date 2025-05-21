@@ -35,7 +35,7 @@ public class Server {
     }
     
     public void sendMessageTCPServer(String message){
-        for (int i = 1; i <= nrcli; i++) {
+        for (int i = 0; i < nrcli; i++) {
             clients[i].sendMessage(message);
             System.out.println("ENVIANDO A JUGADOR " + (i));
         }
@@ -44,21 +44,20 @@ public class Server {
     public void run(){
         running = true;
         try{
-            System.out.println("TCP Server"+"S : Connecting...");
+            System.out.println("Socket Server: Connecting...");
             serverSocket = new ServerSocket(SERVER_PORT);
-            
+            System.out.println("Sucessfully");
             while(running){
+                System.out.println("Server waiting a client...");
                 Socket client = serverSocket.accept();
-                System.out.println("TCP Server"+"S: Receiving...");
                 
                 if(!running) break;
                 
-                nrcli++;
-                System.out.println("Engendrado " + nrcli);
+                System.out.println("Cliente id: " + nrcli + " recibido");
                 clients[nrcli] = new ServerThread(client,this,nrcli,clients);
                 clientsThreads[nrcli] = new Thread(clients[nrcli]);
                 clientsThreads[nrcli].start();
-                System.out.println("Nuevo conectado\n"+ nrcli +" jugadores conectados");
+                System.out.println("Nuevo ciente conectado\n"+ (++nrcli) +" clientes conectados");
                 
             }
             
