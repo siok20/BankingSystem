@@ -10,6 +10,7 @@ import java.util.Scanner;
  *
  * @author siok
  */
+/*
 public class Node {
     WorkNode wkNode;
     Scanner sc;
@@ -53,7 +54,8 @@ public class Node {
     }
     void ClienteEnvia(String envia){
         if (wkNode != null) {
-            wkNode.sendMessage(envia);
+            //wkNode.sendMessage(envia);
         }
     }
 }
+*/

@@ -4,13 +4,19 @@
  */
 package com.banking.managedata;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -81,5 +87,102 @@ public class ManageData {
         } catch (IOException e) {
             System.err.println("Error al particionar " + tipo + ": " + e.getMessage());
         }
+    }
+    
+    public static void replicarDatos(int MAX_NODES, int replicas){
+        File clienteDir = new File("src/main/data/cliente");
+        File[] files = clienteDir.listFiles();
+
+        if(files == null){
+            System.out.println("no se encontraron clientes");
+            return;
+        }
+        
+        for(File file:files){
+            String name = file.getName();
+
+            if (name.matches("cliente\\.\\d+\\.\\d+\\.txt")){
+                String[] partes = name.replace(".txt", "").replace("cliente.", "").split("\\.");
+                int numPart = Integer.parseInt(partes[0]); 
+                int numRep = Integer.parseInt(partes[1]);
+                
+                
+                List<Integer> randomNodes = getThreeRandomNumbers(MAX_NODES);
+                int nodoDestino = randomNodes.get(0);
+                int nodoDestino1 = randomNodes.get(1);
+                int nodoDestino2 = randomNodes.get(2);
+
+                File carpetaNodo = new File("src/main/data/nodo" + nodoDestino);
+                File carpetaNodo1 = new File("src/main/data/nodo" + nodoDestino1);
+                File carpetaNodo2 = new File("src/main/data/nodo" + nodoDestino2);
+                if (!carpetaNodo.exists()) carpetaNodo.mkdirs();
+
+                Path destino = carpetaNodo.toPath().resolve(name);
+                Path destino1 = carpetaNodo1.toPath().resolve(name);
+                Path destino2 = carpetaNodo2.toPath().resolve(name);
+                try {
+                    Files.copy(file.toPath(), destino, StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(file.toPath(), destino1, StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(file.toPath(), destino2, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    System.err.println("Error copiando " + name + ": " + e.getMessage());
+                }
+            }
+        }
+        
+        File cuentaDir = new File("src/main/data/cuentas");
+        files = cuentaDir.listFiles();
+
+        if(files == null){
+            System.out.println("no se encontraron cuentas");
+            return;
+        }
+        
+        for(File file:files){
+            String name = file.getName();
+
+            if (name.matches("cuenta\\.\\d+\\.\\d+\\.txt")){
+                String[] partes = name.replace(".txt", "").replace("cuenta.", "").split("\\.");
+                int numPart = Integer.parseInt(partes[0]); 
+                int numRep = Integer.parseInt(partes[1]);
+                
+                
+                List<Integer> randomNodes = getThreeRandomNumbers(MAX_NODES);
+                int nodoDestino = randomNodes.get(0);
+                int nodoDestino1 = randomNodes.get(1);
+                int nodoDestino2 = randomNodes.get(2);
+
+                File carpetaNodo = new File("src/main/data/nodo" + nodoDestino);
+                File carpetaNodo1 = new File("src/main/data/nodo" + nodoDestino1);
+                File carpetaNodo2 = new File("src/main/data/nodo" + nodoDestino2);
+                if (!carpetaNodo.exists()) carpetaNodo.mkdirs();
+
+                Path destino = carpetaNodo.toPath().resolve(name);
+                Path destino1 = carpetaNodo1.toPath().resolve(name);
+                Path destino2 = carpetaNodo2.toPath().resolve(name);
+                try {
+                    Files.copy(file.toPath(), destino, StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(file.toPath(), destino1, StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(file.toPath(), destino2, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    System.err.println("Error copiando " + name + ": " + e.getMessage());
+                }
+            }
+        }
+    }
+    
+        public static List<Integer> getThreeRandomNumbers(int N) {
+        if (N < 2) {
+            throw new IllegalArgumentException("N debe ser al menos 2 para obtener 3 números distintos.");
+        }
+
+        Random rand = new Random();
+        Set<Integer> uniqueNumbers = new HashSet<>();
+
+        while (uniqueNumbers.size() < 3) {
+            uniqueNumbers.add(rand.nextInt(N)); // 0 a N inclusive
+        }
+        //System.out.println(uniqueNumbers);
+        return new ArrayList<>(uniqueNumbers);
     }
 }

@@ -39,6 +39,12 @@ class Cliente50{
             
             input = sc.nextLine();
             
+            if("EXIT_CODE".equalsIgnoreCase(input) || "3".equalsIgnoreCase(input)){
+                System.out.println("Saliendo del sistema...");
+                //closeServer();
+                break;
+            }
+            
             if(!validateInput(input)){
                 System.out.println("");
                 System.out.println("Escriba una opcion correcta");
@@ -46,12 +52,6 @@ class Cliente50{
                 continue;
             }else{
                 data = getData(input);
-            }
-            
-            if("EXIT_CODE".equalsIgnoreCase(input)){
-                System.out.println("Saliendo del sistema...");
-                //closeServer();
-                break;
             }
             
             ClienteEnvia(data);
@@ -70,11 +70,12 @@ class Cliente50{
         }
     }
     void printMenu(){
-        System.out.println("Elije el tipo de operación (1 o 2)");
+        System.out.println("Elije el tipo de operacion (1 o 2)");
         System.out.println("1) Consultar Saldo");
         System.out.println("2) Transferir fondos");
+        System.out.println("3) Salir");
         System.out.println("");
-        System.out.print("Escribe tu respuesta: ");
+        System.out.print("Escribe tu eleccion: ");
     }
     
     boolean validateInput(String option){

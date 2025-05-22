@@ -14,8 +14,8 @@ import java.net.Socket;
 public class TCPClient50 {
 
     private String servermsj;
-    public  String SERVERIP;
-    public static final int SERVERPORT = 8080;
+    public  String SERVER_IP;
+    public static final int SERVER_PORT = 8080;
     private OnMessageReceived mMessageListener = null;
     private boolean mRun = false;
 
@@ -23,7 +23,7 @@ public class TCPClient50 {
     BufferedReader in;
 
     public TCPClient50(String ip,OnMessageReceived listener) {
-        SERVERIP = ip;
+        SERVER_IP = ip;
         mMessageListener = listener;
     }
     public void sendMessage(String message){
@@ -38,14 +38,14 @@ public class TCPClient50 {
     public void run() {
         mRun = true;
         try {
-            InetAddress serverAddr = InetAddress.getByName(SERVERIP);
+            InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
             System.out.println("Socket Client Connecting...");
-            Socket socket = new Socket(serverAddr, SERVERPORT);
+            Socket socket = new Socket(serverAddr, SERVER_PORT);
             System.out.println("Sucessfully");
             try {
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-                System.out.println("TCP Client"+ "C: Sent.");
-                System.out.println("TCP Client"+ "C: Done.");
+                System.out.println("Cliente conectado.");
+
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 while (mRun) {
                     servermsj = in.readLine();
