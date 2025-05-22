@@ -3,23 +3,17 @@ package com.banking.server;
 
 import com.banking.managedata.ManageData;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +39,7 @@ public class Server {
     BufferedReader in;
     ServerSocket serverSocket;
     
-    Map<String,List<String>> nodes = new HashMap<>();
+    Map<String,List<String>> nodes = new ConcurrentHashMap<>();
     
     //el constructor pide una interface OnMessageReceived
     public Server(OnMessageReceived messageListener) {
@@ -55,7 +49,7 @@ public class Server {
         for(int i=0; i<MAX_NODES; i++){
             try {
                 String nodo = "nodo" + i;
-                String port = String.valueOf(8080 + i);
+                String port = String.valueOf(8081 + i);
                 nodes.put(nodo, Arrays.asList("localhost", port, "activo"));
                 Files.createDirectories(Paths.get("src/main/data/nodo" + i));
                                 

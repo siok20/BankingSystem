@@ -29,6 +29,7 @@ public class ManageData {
     public static void generarDatosIniciales(int cantidad) {
         String clientePath = "src/main/data/original/clientes.txt";
         String cuentaPath = "src/main/data/original/cuentas.txt";
+        String transferenciasPath = "src/main/data/original/transferencias.txt";
 
         try {
             // Crea carpeta si no existe
@@ -51,6 +52,13 @@ public class ManageData {
                 }
 
                 System.out.println("Datos generados con exito.");
+                
+                File archivoTransferencias = new File(transferenciasPath);
+                if (archivoTransferencias.createNewFile()) {
+                    System.out.println("Archivo de transferencias creado.");
+                } else {
+                    System.out.println("Archivo de transferencias ya existía.");
+                }
 
             }
         } catch (IOException e) {

@@ -51,6 +51,7 @@ public class TCPClient50 {
                     servermsj = in.readLine();
                     if (servermsj != null && mMessageListener != null) {
                         mMessageListener.messageReceived(servermsj);
+                        //System.out.println(servermsj);
                     }
                     servermsj = null;
                 }

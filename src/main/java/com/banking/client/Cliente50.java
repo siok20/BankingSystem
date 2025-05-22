@@ -1,10 +1,17 @@
 package com.banking.client;
 
 import java.util.Scanner;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 class Cliente50{
     TCPClient50 mTcpClient;
     Scanner sc;
+    
+    private boolean respuestaRecibida = false;
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Condition respuestaCondition = lock.newCondition();
+
     public static void main(String[] args)  {
         Cliente50 objcli = new Cliente50();
         objcli.iniciar();
@@ -35,34 +42,55 @@ class Cliente50{
         String input, data;
         
         while(true){
-            printMenu();
-            
-            input = sc.nextLine();
-            
-            if("EXIT_CODE".equalsIgnoreCase(input) || "3".equalsIgnoreCase(input)){
-                System.out.println("Saliendo del sistema...");
-                //closeServer();
-                break;
+            lock.lock();
+            try {
+                printMenu();
+                input = sc.nextLine();
+
+                if("EXIT_CODE".equalsIgnoreCase(input) || "3".equalsIgnoreCase(input)){
+                    System.out.println("Saliendo del sistema...");
+                    break;
+                }
+
+                if(!validateInput(input)){
+                    System.out.println("");
+                    System.out.println("Escriba una opcion correcta");
+                    System.out.println("");
+                    continue;
+                } else {
+                    data = getData(input);
+                }
+
+                respuestaRecibida = false;
+                ClienteEnvia(data);
+
+                // Espera la respuesta del servidor antes de continuar
+                while (!respuestaRecibida) {
+                    respuestaCondition.await();  // Bloquea el hilo principal
+                }
+
+            } catch (InterruptedException e) {
+                System.err.println("Interrumpido: " + e.getMessage());
+            } finally {
+                lock.unlock();
             }
-            
-            if(!validateInput(input)){
-                System.out.println("");
-                System.out.println("Escriba una opcion correcta");
-                System.out.println("");
-                continue;
-            }else{
-                data = getData(input);
-            }
-            
-            ClienteEnvia(data);
-       }
+        }
         
         System.out.println("Cliente cierra acceso");
     
     }
     void ClienteRecibe(String llego){
-        System.out.println("CLINTE Recibe mensaje::" + llego);
-
+        System.out.println("\n--- Respuesta del Servidor ---");
+        System.out.println(llego);
+        System.out.println("------------------------------\n");
+        
+        lock.lock();
+        try {
+            respuestaRecibida = true;
+            respuestaCondition.signal();  // Despierta al hilo principal
+        } finally {
+            lock.unlock();
+        }
     }
     void ClienteEnvia(String envia){
         if (mTcpClient != null) {
