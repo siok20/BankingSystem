@@ -11,6 +11,7 @@ com\banking\model\Cuenta.class
 com\banking\model\Cliente.class
 com\banking\server\Server.class
 com\banking\server\ServerThread.class
+com\banking\client\ClienteAuto.class
 com\banking\server\ServerController.class
 com\banking\client\Cliente50.class
 com\banking\server\ServerController$1$1.class

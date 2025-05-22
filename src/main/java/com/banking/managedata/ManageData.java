@@ -97,100 +97,50 @@ public class ManageData {
         }
     }
     
-    public static void replicarDatos(int MAX_NODES, int replicas){
-        File clienteDir = new File("src/main/data/cliente");
-        File[] files = clienteDir.listFiles();
+   public static void replicarDatos(int MAX_NODES, int replicas) {
+        replicarArchivosDesdeDirectorio("src/main/data/cliente", "cliente", MAX_NODES, replicas);
+        replicarArchivosDesdeDirectorio("src/main/data/cuentas", "cuenta", MAX_NODES, replicas);
+    }
 
-        if(files == null){
-            System.out.println("no se encontraron clientes");
+    private static void replicarArchivosDesdeDirectorio(String directorio, String prefijoArchivo, int MAX_NODES, int replicas) {
+        File dir = new File(directorio);
+        File[] archivos = dir.listFiles();
+
+        if (archivos == null || archivos.length == 0) {
+            System.out.println("No se encontraron archivos en: " + directorio);
             return;
         }
-        
-        for(File file:files){
-            String name = file.getName();
 
-            if (name.matches("cliente\\.\\d+\\.\\d+\\.txt")){
-                String[] partes = name.replace(".txt", "").replace("cliente.", "").split("\\.");
-                int numPart = Integer.parseInt(partes[0]); 
-                int numRep = Integer.parseInt(partes[1]);
-                
-                
-                List<Integer> randomNodes = getThreeRandomNumbers(MAX_NODES);
-                int nodoDestino = randomNodes.get(0);
-                int nodoDestino1 = randomNodes.get(1);
-                int nodoDestino2 = randomNodes.get(2);
-
-                File carpetaNodo = new File("src/main/data/nodo" + nodoDestino);
-                File carpetaNodo1 = new File("src/main/data/nodo" + nodoDestino1);
-                File carpetaNodo2 = new File("src/main/data/nodo" + nodoDestino2);
-                if (!carpetaNodo.exists()) carpetaNodo.mkdirs();
-
-                Path destino = carpetaNodo.toPath().resolve(name);
-                Path destino1 = carpetaNodo1.toPath().resolve(name);
-                Path destino2 = carpetaNodo2.toPath().resolve(name);
-                try {
-                    Files.copy(file.toPath(), destino, StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(file.toPath(), destino1, StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(file.toPath(), destino2, StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    System.err.println("Error copiando " + name + ": " + e.getMessage());
-                }
-            }
-        }
-        
-        File cuentaDir = new File("src/main/data/cuentas");
-        files = cuentaDir.listFiles();
-
-        if(files == null){
-            System.out.println("no se encontraron cuentas");
-            return;
-        }
-        
-        for(File file:files){
-            String name = file.getName();
-
-            if (name.matches("cuenta\\.\\d+\\.\\d+\\.txt")){
-                String[] partes = name.replace(".txt", "").replace("cuenta.", "").split("\\.");
-                int numPart = Integer.parseInt(partes[0]); 
-                int numRep = Integer.parseInt(partes[1]);
-                
-                
-                List<Integer> randomNodes = getThreeRandomNumbers(MAX_NODES);
-                int nodoDestino = randomNodes.get(0);
-                int nodoDestino1 = randomNodes.get(1);
-                int nodoDestino2 = randomNodes.get(2);
-
-                File carpetaNodo = new File("src/main/data/nodo" + nodoDestino);
-                File carpetaNodo1 = new File("src/main/data/nodo" + nodoDestino1);
-                File carpetaNodo2 = new File("src/main/data/nodo" + nodoDestino2);
-                if (!carpetaNodo.exists()) carpetaNodo.mkdirs();
-
-                Path destino = carpetaNodo.toPath().resolve(name);
-                Path destino1 = carpetaNodo1.toPath().resolve(name);
-                Path destino2 = carpetaNodo2.toPath().resolve(name);
-                try {
-                    Files.copy(file.toPath(), destino, StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(file.toPath(), destino1, StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(file.toPath(), destino2, StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    System.err.println("Error copiando " + name + ": " + e.getMessage());
-                }
+        for (File archivo : archivos) {
+            String nombre = archivo.getName();
+            if (nombre.matches(prefijoArchivo + "\\.\\d+\\.\\d+\\.txt")) {
+                replicarArchivoAReplicas(archivo, nombre, MAX_NODES, replicas);
             }
         }
     }
-    
-        public static List<Integer> getThreeRandomNumbers(int N) {
-        if (N < 2) {
-            throw new IllegalArgumentException("N debe ser al menos 2 para obtener 3 números distintos.");
-        }
 
-        Random rand = new Random();
-        Set<Integer> uniqueNumbers = new HashSet<>();
+    private static void replicarArchivoAReplicas(File archivo, String nombre, int MAX_NODES, int replicas) {
+        List<Integer> nodosAleatorios = getUniqueRandomNumbers(MAX_NODES, replicas);
 
-        while (uniqueNumbers.size() < 3) {
-            uniqueNumbers.add(rand.nextInt(N)); // 0 a N inclusive
+        for (int nodoId : nodosAleatorios) {
+            File carpetaNodo = new File("src/main/data/nodo" + nodoId);
+            if (!carpetaNodo.exists()) carpetaNodo.mkdirs();
+
+            Path destino = carpetaNodo.toPath().resolve(nombre);
+            try {
+                Files.copy(archivo.toPath(), destino, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                System.err.println("Error copiando " + nombre + " a nodo" + nodoId + ": " + e.getMessage());
+            }
         }
-        //System.out.println(uniqueNumbers);
-        return new ArrayList<>(uniqueNumbers);
+    }
+
+    private static List<Integer> getUniqueRandomNumbers(int max, int cantidad) {
+        Set<Integer> numeros = new HashSet<>();
+        Random rnd = new Random();
+        while (numeros.size() < cantidad) {
+            numeros.add(rnd.nextInt(max)); // Asume nodos numerados desde 1 hasta MAX_NODES
+        }
+        return new ArrayList<>(numeros);
     }
 }

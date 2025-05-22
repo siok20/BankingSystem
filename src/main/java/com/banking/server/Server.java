@@ -63,7 +63,7 @@ public class Server {
         ManageData.particionarDatos("cliente", 3, "src/main/data/original", "src/main/data/cliente");
         ManageData.particionarDatos("cuenta", 3, "src/main/data/original", "src/main/data/cuentas");
         
-        ManageData.replicarDatos(5, 3);
+        ManageData.replicarDatos(MAX_NODES, 3);
             
     }
     
